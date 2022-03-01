@@ -71,9 +71,9 @@
                 large
                 rounded
                 width="600"
-                @click="payed()"
+                @click="paid()"
               >
-                Payed
+                PAID
               </v-btn>
             </v-card-actions>
           </v-stepper-content>
@@ -148,7 +148,7 @@ export default {
       this.dialog = false;
       this.e1 = 1;
     },
-    async payed() {
+    async paid() {
       this.e1 = 2;
       const currentPK = this.selectedProductDetail.id;
       const restqty = this.selectedProductDetail.restqty;
