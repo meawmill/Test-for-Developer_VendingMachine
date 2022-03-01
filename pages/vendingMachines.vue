@@ -12,13 +12,7 @@
       />
     </v-card-title>
 
-    <v-data-table
-      dense
-      :headers="headers"
-      :items="machines"
-      :search="search"
-      @click:row="viewLocation"
-    >
+    <v-data-table dense :headers="headers" :items="machines" :search="search">
       <template v-slot:item.action="{ item }">
         <v-icon small class="mr-2" @click="viewLocation(item)">
           mdi-map
