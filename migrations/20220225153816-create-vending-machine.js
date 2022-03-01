@@ -8,17 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      vm_id: {
-        type: Sequelize.INTEGER
-      },
       vm_code: {
         type: Sequelize.STRING
       },
-      lat: {
-        type: Sequelize.FLOAT
-      },
-      lng: {
-        type: Sequelize.FLOAT
+      location: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,

@@ -8,9 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      prod_id: {
-        type: Sequelize.INTEGER
-      },
       eanCode: {
         type: Sequelize.STRING
       },

@@ -4,12 +4,15 @@ const { Nuxt, Builder } = require('nuxt')
 const app = express()
 
 const config = require('../nuxt.config.js')
-const productsController = require('./controllers/products')
+const productsController = require('../controllers/products')
+const machinesController = require('../controllers/machines')
+const stockController = require('../controllers/machinestock')
+const buyingController = require('../controllers/buying')
 
 // Import and Set Nuxt.js options
 config.dev = process.env.NODE_ENV !== 'production'
 
-async function start () {
+async function start() {
   // Init Nuxt.js
   const nuxt = new Nuxt(config)
 
@@ -29,6 +32,20 @@ async function start () {
   app.post('/api/products', productsController.store)
   app.put('/api/products/:id', productsController.update)
   app.delete('/api/products/:id', productsController.destroy)
+  // machine Controller routing
+  app.get('/api/machine', machinesController.index)
+  app.post('/api/machine', machinesController.store)
+  app.put('/api/machine/:id', machinesController.update)
+  app.delete('/api/machine/:id', machinesController.destroy)
+  // stock Controller routing
+  app.get('/api/stock', stockController.index)
+  app.post('/api/stock', stockController.store)
+  app.put('/api/stock/:id', stockController.update)
+  app.delete('/api/stock/:id', stockController.destroy)
+
+  // buying Controller routing
+  app.get('/api/buying', buyingController.index)
+  app.get('/api/buying/lessstock', buyingController.stock)
 
   // Give nuxt middleware to express
   app.use(nuxt.render)

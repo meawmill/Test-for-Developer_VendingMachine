@@ -12,14 +12,23 @@
       />
     </v-card-title>
 
-    <v-data-table :headers="headers" :items="products" :search="search">
+    <v-data-table
+      dense
+      :headers="headers"
+      :items="machines"
+      :search="search"
+      @click:row="viewLocation"
+    >
       <template v-slot:item.action="{ item }">
+        <v-icon small class="mr-2" @click="viewLocation(item)">
+          mdi-map
+        </v-icon>
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
 
-    <ProductForm ref="ProductForm" @add="submitAdd" @edit="submitEdit" />
+    <vendingMachine ref="MachineForm" @add="submitAdd" @edit="submitEdit" />
 
     <v-snackbar v-model="snackbar.show" :color="snackbar.type">
       {{ snackbar.text }}
@@ -49,10 +58,10 @@
 </template>
 
 <script>
-import ProductForm from "~/components/forms/Product";
+import vendingMachine from "~/components/forms/vendingMachine";
 
 export default {
-  components: { ProductForm },
+  components: { vendingMachine },
   data() {
     return {
       search: "",
@@ -64,12 +73,11 @@ export default {
       currentPK: null,
       confirm: false,
       headers: [
-        { text: "EAN Code", value: "eanCode" },
-        { text: "Product", value: "prodName" },
-        { text: "Price", value: "price" },
+        { text: "Machine Code", value: "vm_code" },
+        { text: "Location", value: "location" },
         { text: "Actions", value: "action", sortable: false },
       ],
-      products: [],
+      machines: [],
     };
   },
   mounted() {
@@ -77,29 +85,33 @@ export default {
   },
   methods: {
     async fetchData() {
-      this.products = await this.$axios.$get("/api/products");
+      this.machines = await this.$axios.$get("/api/machine");
     },
     addItem() {
-      this.$refs.ProductForm.open("add");
+      this.$refs.MachineForm.open("add");
     },
     editItem(item) {
       this.currentPK = item.id;
-      this.$refs.ProductForm.open("edit", item);
+      this.$refs.MachineForm.open("edit", item);
     },
     deleteItem(item) {
       this.currentPK = item.id;
       this.confirm = true;
     },
+    viewLocation(item) {
+      const link = item.location;
+      window.open(link);
+    },
     async submitAdd(data) {
       try {
-        const result = await this.$axios.$post("/api/products", data);
+        const result = await this.$axios.$post("/api/machine", data);
         if (result) {
           this.snackbar = {
             show: true,
             text: "Success",
             type: "success",
           };
-          this.$refs.ProductForm.close();
+          this.$refs.MachineForm.close();
           this.fetchData();
         }
       } catch (e) {
@@ -113,7 +125,7 @@ export default {
     async submitEdit(data) {
       try {
         const result = await this.$axios.$put(
-          `/api/products/${this.currentPK}`,
+          `/api/machine/${this.currentPK}`,
           data
         );
         if (result) {
@@ -122,7 +134,7 @@ export default {
             text: "Success",
             type: "success",
           };
-          this.$refs.ProductForm.close();
+          this.$refs.MachineForm.close();
           this.fetchData();
         }
       } catch (e) {
@@ -136,7 +148,7 @@ export default {
     async submitDelete() {
       this.confirm = false;
       try {
-        await this.$axios.$delete(`/api/products/${this.currentPK}`);
+        await this.$axios.$delete(`/api/machine/${this.currentPK}`);
         this.snackbar = {
           show: true,
           text: "Success",

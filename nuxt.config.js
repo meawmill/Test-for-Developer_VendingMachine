@@ -1,14 +1,13 @@
-import colors from 'vuetify/es5/util/colors'
+const colors = require('vuetify/es5/util/colors').default
 
-export default {
-  // Global page headers: https://go.nuxtjs.dev/config-head
+module.exports = {
   head: {
-    titleTemplate: '%s - VendingMachine',
-    title: 'VendingMachine',
+    titleTemplate: '%s - DrinkingVendingMachine',
+    title: 'DrinkingVendingMachine',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' },
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
@@ -29,8 +28,6 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify'
   ],
@@ -42,7 +39,9 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
-    '@nuxt/content'
+    '@nuxt/content',
+    // Doc: https://github.com/nuxt-community/dotenv-module
+    '@nuxtjs/dotenv'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -60,6 +59,16 @@ export default {
 
   // Content module configuration: https://go.nuxtjs.dev/config-content
   content: {},
+
+  target: 'static',
+
+  generate: {
+    fallback: true
+  },
+
+  static: {
+    prefix: false
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -82,5 +91,12 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    analyze: {
+      analyzerMode: 'static'
+    },
+    vendor: [
+      'vuetify',
+      'vue-axios'
+    ]
   }
 }

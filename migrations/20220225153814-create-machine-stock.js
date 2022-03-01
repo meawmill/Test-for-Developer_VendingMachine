@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      vm_id: {
+      vm_code: {
         type: Sequelize.STRING
       },
       channel: {

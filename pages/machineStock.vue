@@ -12,14 +12,14 @@
       />
     </v-card-title>
 
-    <v-data-table :headers="headers" :items="products" :search="search">
+    <v-data-table dense :headers="headers" :items="stock" :search="search">
       <template v-slot:item.action="{ item }">
         <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
       </template>
     </v-data-table>
 
-    <ProductForm ref="ProductForm" @add="submitAdd" @edit="submitEdit" />
+    <newStock ref="stockForm" @add="submitAdd" @edit="submitEdit" />
 
     <v-snackbar v-model="snackbar.show" :color="snackbar.type">
       {{ snackbar.text }}
@@ -49,10 +49,10 @@
 </template>
 
 <script>
-import ProductForm from "~/components/forms/Product";
+import newStock from "~/components/forms/newStock";
 
 export default {
-  components: { ProductForm },
+  components: { newStock },
   data() {
     return {
       search: "",
@@ -64,12 +64,14 @@ export default {
       currentPK: null,
       confirm: false,
       headers: [
-        { text: "EAN Code", value: "eanCode" },
-        { text: "Product", value: "prodName" },
-        { text: "Price", value: "price" },
+        { text: "Machine Code", value: "vm_code" },
+        { text: "Chennel", value: "channel" },
+        { text: "Product ID", value: "prod_id" },
+        { text: "Max QTY", value: "maxqty" },
+        { text: "Rest", value: "restqty" },
         { text: "Actions", value: "action", sortable: false },
       ],
-      products: [],
+      stock: [],
     };
   },
   mounted() {
@@ -77,29 +79,33 @@ export default {
   },
   methods: {
     async fetchData() {
-      this.products = await this.$axios.$get("/api/products");
+      this.stock = await this.$axios.$get("/api/stock");
     },
     addItem() {
-      this.$refs.ProductForm.open("add");
+      this.$refs.stockForm.open("add");
     },
     editItem(item) {
       this.currentPK = item.id;
-      this.$refs.ProductForm.open("edit", item);
+      this.$refs.stockForm.open("edit", item);
     },
     deleteItem(item) {
       this.currentPK = item.id;
       this.confirm = true;
     },
+    viewLocation(item) {
+      const link = item.location;
+      window.open(link);
+    },
     async submitAdd(data) {
       try {
-        const result = await this.$axios.$post("/api/products", data);
+        const result = await this.$axios.$post("/api/stock", data);
         if (result) {
           this.snackbar = {
             show: true,
             text: "Success",
             type: "success",
           };
-          this.$refs.ProductForm.close();
+          this.$refs.stockForm.close();
           this.fetchData();
         }
       } catch (e) {
@@ -113,7 +119,7 @@ export default {
     async submitEdit(data) {
       try {
         const result = await this.$axios.$put(
-          `/api/products/${this.currentPK}`,
+          `/api/stock/${this.currentPK}`,
           data
         );
         if (result) {
@@ -122,7 +128,7 @@ export default {
             text: "Success",
             type: "success",
           };
-          this.$refs.ProductForm.close();
+          this.$refs.stockForm.close();
           this.fetchData();
         }
       } catch (e) {
@@ -136,7 +142,7 @@ export default {
     async submitDelete() {
       this.confirm = false;
       try {
-        await this.$axios.$delete(`/api/products/${this.currentPK}`);
+        await this.$axios.$delete(`/api/stock/${this.currentPK}`);
         this.snackbar = {
           show: true,
           text: "Success",

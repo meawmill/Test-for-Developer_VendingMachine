@@ -3,9 +3,9 @@ const db = require('../models')
 module.exports = {
   index: async (req, res) => {
     try {
-      const prods = await db.products.findAll();
-      // console.log("All:", JSON.stringify(prods, null, 2));
-      return res.json(prods)
+      const machinestock = await db.machineStock.findAll();
+      // console.log("All:", JSON.stringify(machinestock, null, 2));
+      return res.json(machinestock)
     } catch (e) {
       return res.status(500).json({ message: 'Cannot get data from database.' })
     }
@@ -14,10 +14,10 @@ module.exports = {
     const data = req.body
     if (data) {
       try {
-        const product = await db.products.sequelize.transaction((t) => {
-          return db.products.create(data, { transaction: t })
+        const machinestock = await db.machineStock.sequelize.transaction((t) => {
+          return db.machineStock.create(data, { transaction: t })
         })
-        return res.status(201).json(product)
+        return res.status(201).json(machinestock)
       } catch (e) {
         return res.status(500).json({ message: 'Cannot store data to database.' })
       }
@@ -28,8 +28,8 @@ module.exports = {
     const id = req.params.id
     const data = req.body
     if (id && data) {
-      await db.products.sequelize.transaction((t) => {
-        return db.products.update(data, { where: { id } }, { transaction: t })
+      await db.machineStock.sequelize.transaction((t) => {
+        return db.machineStock.update(data, { where: { id } }, { transaction: t })
       })
       return res.json(data)
     }
@@ -39,7 +39,7 @@ module.exports = {
     const id = req.params.id
     if (id) {
       try {
-        await db.products.destroy({ where: { id } })
+        await db.machineStock.destroy({ where: { id } })
         return res.status(204).send()
       } catch (e) {
         return res.status(500).json({ message: 'Cannot remove data from database.' })

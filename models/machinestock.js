@@ -4,17 +4,21 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class machineStock extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      this.hasMany(models.products, {
+        foreignKey: 'id',
+        sourceKey: 'prod_id',
+        onDelete: 'CASCADE'
+      });
+      this.hasMany(models.vendingMachine, {
+        foreignKey: 'vm_code',
+        sourceKey: 'vm_code',
+        onDelete: 'CASCADE'
+      });
     }
   }
   machineStock.init({
-    vm_id: DataTypes.STRING,
+    vm_code: DataTypes.STRING,
     channel: DataTypes.STRING,
     prod_id: DataTypes.INTEGER,
     maxqty: DataTypes.INTEGER,
